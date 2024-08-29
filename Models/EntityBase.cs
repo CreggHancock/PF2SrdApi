@@ -7,8 +7,8 @@ public abstract record EntityBase
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string? Id { get; set; }
+    public string? Id { get; init; }
 
     [BsonElement("index")]
-    public required string Index { get; set; }
+    public required string Index { get; init; }
 }

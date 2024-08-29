@@ -4,5 +4,5 @@ public record ResultsWithCount<T>
 {
     public required int Count { get; init; }
 
-    public required IReadOnlyCollection<T> Results { get; init; }
+    public required IEnumerable<T> Results { get; init; }
 }

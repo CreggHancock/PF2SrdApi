@@ -11,5 +11,8 @@ public record Monster : EntityBase, IEntity
     public required string Name { get; init; }
 
     [BsonElement("url")]
-    public required string Url { get; set; }
+    public required string Url { get; init; }
+
+    [BsonElement("challenge_rating")]
+    public required float Level { get; init; }
 }

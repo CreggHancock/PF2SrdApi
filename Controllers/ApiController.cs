@@ -35,9 +35,9 @@ public class ApiController : ControllerBase
     }
 
     [HttpGet("monsters")]
-    public async Task<ResultsWithCount<MonsterMinimal>> GetMonsters()
+    public async Task<ResultsWithCount<MonsterMinimal>> GetMonsters(int? level = null)
     {
-        return await this.apiService.GetAsync<MonsterMinimal>();
+        return await this.apiService.GetMonsters(level);
     }
 
     [HttpGet("monsters/{index}")]
