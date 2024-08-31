@@ -2,45 +2,57 @@
 using MongoDB.Driver;
 using PF2SrdApi.Models;
 using PF2SrdApi.Common;
+using MongoDB.Driver.Linq;
+using AutoMapper.QueryableExtensions;
+using AutoMapper;
 
 namespace PF2SrdApi.Services;
 
 public class ApiService
 {
     private readonly IMongoDatabase database;
+    private readonly IMapper mapper;
 
     public ApiService(
-        IOptions<DatabaseSettings> bookStoreDatabaseSettings)
+        IOptions<DatabaseSettings> bookStoreDatabaseSettings,
+        IMapper mapper)
     {
         var mongoClient = new MongoClient(
             bookStoreDatabaseSettings.Value.ConnectionString);
 
         this.database = mongoClient.GetDatabase(
             bookStoreDatabaseSettings.Value.DatabaseName);
+        this.mapper = mapper;
     }
 
     public async Task<ResultsWithCount<MonsterMinimal>> GetMonsters(int? level)
     {
-        var collection = this.database.GetCollection<Monster>(Monster.TableName);
-        var results = await collection.Find(m => level == null || m.Level == level).ToListAsync();
-        return results.Select(m => new MonsterMinimal { Index = m.Index, Name = m.Name, Url = m.Url,}).ToResultsWithCount();
+        var results = await this.Get<Monster>()
+            .Where(m => level == null | m.Level == level)
+            .ToListAsync();
+            
+        return results.Select(mapper.Map<MonsterMinimal>).ToResultsWithCount();
     }
 
     public async Task<ResultsWithCount<T>> GetAsync<T>() where T : EntityBase, IEntity
     {
-        var collecton = this.database.GetCollection<T>(GetCollectionName(typeof(T)));
-        var results = await collecton.Find(_ => true).ToListAsync();
+        var results = await this.Get<T>().ToListAsync();
         return results.ToResultsWithCount();
     }
         
     public async Task<T?> GetAsync<T>(string index) where T : EntityBase, IEntity
     {
-        var collection = this.database.GetCollection<T>(GetCollectionName(typeof(T)));
-        return await collection.Find(x => x.Index == index).FirstOrDefaultAsync();
+        return await this.Get<T>().FirstOrDefaultAsync(x => x.Index == index);
     }
 
     private static string GetCollectionName(Type type)
     {
         return (string?)type.GetProperty(nameof(IEntity.TableName))?.GetValue(null) ?? throw new ArgumentOutOfRangeException(nameof(type));
+    }
+
+    private IMongoQueryable<T> Get<T>() where T :EntityBase, IEntity
+    {
+        var collection = database.GetCollection<T>(GetCollectionName(typeof(T)));
+        return collection.AsQueryable();
     }
 }
