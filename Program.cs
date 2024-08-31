@@ -10,7 +10,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.Configure<DatabaseSettings>(
     builder.Configuration.GetSection("Database"));
 
-builder.Services.AddSingleton<ApiService>();
+builder.Services.AddTransient<ApiService>();
+builder.Services.AddTransient<ApiRepository>();
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 var app = builder.Build();
