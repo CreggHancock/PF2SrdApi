@@ -1,6 +1,0 @@
-@PF2SrdApi_HostAddress = http://localhost:5150
-
-GET {{PF2SrdApi_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

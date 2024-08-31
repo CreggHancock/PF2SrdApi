@@ -1,12 +1,11 @@
-﻿using Microsoft.Extensions.Options;
-using MongoDB.Driver;
-using PF2SrdApi.Models;
-using PF2SrdApi.Common;
-using MongoDB.Driver.Linq;
-using AutoMapper.QueryableExtensions;
-using AutoMapper;
+﻿namespace PF2SrdApi.Services;
 
-namespace PF2SrdApi.Services;
+using AutoMapper;
+using Microsoft.Extensions.Options;
+using MongoDB.Driver;
+using MongoDB.Driver.Linq;
+using PF2SrdApi.Common;
+using PF2SrdApi.Models;
 
 public class ApiService
 {
@@ -30,17 +29,19 @@ public class ApiService
         var results = await this.Get<Monster>()
             .Where(m => level == null | m.Level == level)
             .ToListAsync();
-            
-        return results.Select(mapper.Map<MonsterMinimal>).ToResultsWithCount();
+
+        return results.Select(this.mapper.Map<MonsterMinimal>).ToResultsWithCount();
     }
 
-    public async Task<ResultsWithCount<T>> GetAsync<T>() where T : EntityBase, IEntity
+    public async Task<ResultsWithCount<T>> GetAsync<T>()
+        where T : EntityBase, IEntity
     {
         var results = await this.Get<T>().ToListAsync();
         return results.ToResultsWithCount();
     }
-        
-    public async Task<T?> GetAsync<T>(string index) where T : EntityBase, IEntity
+
+    public async Task<T?> GetAsync<T>(string index)
+        where T : EntityBase, IEntity
     {
         return await this.Get<T>().FirstOrDefaultAsync(x => x.Index == index);
     }
@@ -50,9 +51,10 @@ public class ApiService
         return (string?)type.GetProperty(nameof(IEntity.TableName))?.GetValue(null) ?? throw new ArgumentOutOfRangeException(nameof(type));
     }
 
-    private IMongoQueryable<T> Get<T>() where T :EntityBase, IEntity
+    private IMongoQueryable<T> Get<T>()
+        where T : EntityBase, IEntity
     {
-        var collection = database.GetCollection<T>(GetCollectionName(typeof(T)));
+        var collection = this.database.GetCollection<T>(GetCollectionName(typeof(T)));
         return collection.AsQueryable();
     }
 }
