@@ -12,13 +12,13 @@ public class ApiController(ApiService apiService)
     [HttpGet("alignments")]
     public async Task<ResultsWithCount<Alignment>> GetAlignments()
     {
-        return await apiService.GetAsync<Alignment>();
+        return await apiService.Get<Alignment>();
     }
 
     [HttpGet("alignments/{index}")]
     public async Task<Alignment> GetAlignment(string index)
     {
-        var alignment = await apiService.GetAsync<Alignment>(index);
+        var alignment = await apiService.Get<Alignment>(index);
         return alignment ?? throw new ArgumentOutOfRangeException(nameof(index));
     }
 
@@ -31,7 +31,7 @@ public class ApiController(ApiService apiService)
     [HttpGet("monsters/{index}")]
     public async Task<MonsterMinimal> GetMonster(string index)
     {
-        var monster = await apiService.GetAsync<MonsterMinimal>(index);
+        var monster = await apiService.Get<MonsterMinimal>(index);
         return monster ?? throw new ArgumentOutOfRangeException(nameof(index));
     }
 }

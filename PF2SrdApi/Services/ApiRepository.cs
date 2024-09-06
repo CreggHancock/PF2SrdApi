@@ -5,24 +5,12 @@ using PF2SrdApi.Models;
 
 namespace PF2SrdApi.Services;
 
-public class ApiRepository
+public class ApiRepository(IMongoDatabase database)
 {
-    private readonly IMongoDatabase database;
-
-    public ApiRepository(
-    IOptions<DatabaseSettings> bookStoreDatabaseSettings)
-    {
-        var mongoClient = new MongoClient(
-            bookStoreDatabaseSettings.Value.ConnectionString);
-
-        this.database = mongoClient.GetDatabase(
-            bookStoreDatabaseSettings.Value.DatabaseName);
-    }
-
-    public IMongoQueryable<T> Get<T>()
+    public virtual IMongoQueryable<T> Get<T>()
         where T : EntityBase, IEntity
     {
-        var collection = this.database.GetCollection<T>(GetCollectionName(typeof(T)));
+        var collection = database.GetCollection<T>(GetCollectionName(typeof(T)));
         return collection.AsQueryable();
     }
 
