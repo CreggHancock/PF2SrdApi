@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EphemeralMongo;
+using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using PF2SrdApi.Models;
 using PF2SrdApi.Services;
@@ -32,7 +33,7 @@ public class ApiServiceTests
 
         var mongoOptions = new MongoRunnerOptions
         {
-            BinaryDirectory = "C:\\Program Files\\MongoDB\\Server\\7.0\\bin",
+            BinaryDirectory = GetMongoBinaryDirectory(),
         };
         using var runner = MongoRunner.Run(mongoOptions);
         var database = await GetDatabase(MonsterMinimal.TableName, runner);
@@ -62,5 +63,16 @@ public class ApiServiceTests
         var database = new MongoClient(runner.ConnectionString).GetDatabase("default");
         await database.CreateCollectionAsync(tableName);
         return database;
+    }
+
+    private static string GetMongoBinaryDirectory()
+    {
+        var rootPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+        return new ConfigurationBuilder()
+            .AddJsonFile($"{rootPath}/appsettings.json")
+            .AddEnvironmentVariables()
+            .Build()
+            .GetValue<string>("MongoBinaryDirectory")
+                ?? throw new FileLoadException("Could not find MongoBinaryDirectory in test appsettings");
     }
 }
