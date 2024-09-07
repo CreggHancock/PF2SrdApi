@@ -23,7 +23,7 @@ jobs:
     - name: action-mongo-tools
       uses: boly38/action-mongo-tools@v1.0.1
     - name: Check Mongo Install Directory
-      run: which mongo
+      run: locate -b '\mongo'
     - uses: actions/checkout@v4
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
