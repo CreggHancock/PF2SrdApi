@@ -20,10 +20,10 @@ jobs:
     steps:
     - name: Check Directory
       run: echo $MongoBinaryDirectory
-    - name: Install MongoDB
-      run: |
-        sudo apt-get install -y mongodb-org
-        sudo apt-get update
+    - name: action-mongo-tools
+      uses: boly38/action-mongo-tools@v1.0.1
+    - name: Update
+      run: sudo apt-get update
     - name: Find Mongo
       run: which mongo
     - uses: actions/checkout@v4
