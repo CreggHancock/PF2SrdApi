@@ -22,8 +22,11 @@ jobs:
       run: echo $MongoBinaryDirectory
     - name: action-mongo-tools
       uses: boly38/action-mongo-tools@v1.0.1
-    - name: Which Apt
-      run: which apt
+    - name: Install MongoDB
+      run: |
+        sudo apt-get install -y mongodb-org
+        sudo apt-get update
+        which mongo
     - uses: actions/checkout@v4
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
