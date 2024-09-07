@@ -25,7 +25,7 @@ jobs:
     - name: Update
       run: sudo apt-get update
     - name: Find Mongo
-      run: which mongodb
+      run: whereis apt
     - uses: actions/checkout@v4
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
