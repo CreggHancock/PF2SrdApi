@@ -10,7 +10,7 @@ on:
     branches: [ "main" ]
 
 env:
-  MongoBinaryDirectory: /usr/bin/mongod
+  MongoBinaryDirectory: /usr/bin/
 
 jobs:
   build:
