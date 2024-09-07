@@ -23,7 +23,11 @@ jobs:
     - name: action-mongo-tools
       uses: boly38/action-mongo-tools@v1.0.1
     - name: Check Mongo Install Directory
-      run: locate -b '\mongo'
+      run: |
+        sudo apt update 
+        sudo apt install mlocate
+        sudo updatedb
+        locate -b '\mongo'
     - uses: actions/checkout@v4
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
