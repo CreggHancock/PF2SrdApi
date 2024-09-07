@@ -8,71 +8,88 @@ using Shouldly;
 
 namespace PF2SrdApi.Tests.Services;
 
-public class ApiServiceTests
+public class ApiServiceTests : TestBase
 {
     [Fact]
     public async Task GetMonsters_GetsMonsters()
     {
-        MonsterMinimal[] expectedMonsters =
+        Monster[] expectedMonsters =
         [
-            new MonsterMinimal
+            new Monster
             {
                 Index = "mon",
                 Name = "ster",
                 Url = "mon/ster",
                 Id = string.Empty,
+                Level = 1,
             },
-            new MonsterMinimal
+            new Monster
             {
                 Index = "mini",
                 Name = "mal",
                 Url = "mini/mal",
                 Id = string.Empty,
+                Level = 2,
             },
         ];
 
-        var mongoOptions = new MongoRunnerOptions
-        {
-            BinaryDirectory = GetMongoBinaryDirectory(),
-        };
-        using var runner = MongoRunner.Run(mongoOptions);
-        var database = await GetDatabase(MonsterMinimal.TableName, runner);
-        var collection = database.GetCollection<MonsterMinimal>(MonsterMinimal.TableName);
-        await collection.InsertManyAsync(expectedMonsters);
-        var repository = new ApiRepository(database);
+        using var runner = this.CreateMongoRunner();
+        var repository = await this.CreateApiRepository(runner, Monster.TableName, expectedMonsters);
         var apiService = new ApiService(repository, GetTestMapper());
 
         var monsters = await apiService.GetMonsters();
 
         monsters.Count.ShouldBe(2);
-        monsters.Results.ShouldBe(expectedMonsters);
+        monsters.Results.ShouldBe(expectedMonsters.Select(m => new MonsterMinimal
+            {
+                Index = m.Index,
+                Name = m.Name,
+                Url = m.Url,
+                Id = m.Id,
+            }));
     }
 
-    private static IMapper GetTestMapper()
+    [Fact]
+    public async Task GetMonsters_WithLevelFilter_GetsFilteredMonsters()
     {
-        var config = new MapperConfiguration(cfg =>
+        MonsterMinimal expectedMonster = new ()
         {
-            cfg.AddProfile<AutoMapperProfile>();
-        });
+            Index = "mon",
+            Name = "ster",
+            Url = "mon/ster",
+            Id = string.Empty,
+        };
 
-        return config.CreateMapper();
-    }
+        Monster[] allMonsters =
+        [
+            new Monster
+            {
+                Index = expectedMonster.Index,
+                Name = expectedMonster.Name,
+                Url = expectedMonster.Url,
+                Id = expectedMonster.Id,
+                Level = 1,
+            },
+            new Monster
+            {
+                Index = "mini",
+                Name = "mal",
+                Url = "mini/mal",
+                Id = string.Empty,
+                Level = 2,
+            },
+        ];
 
-    private static async Task<IMongoDatabase> GetDatabase(string tableName, IMongoRunner runner)
-    {
-        var database = new MongoClient(runner.ConnectionString).GetDatabase("default");
-        await database.CreateCollectionAsync(tableName);
-        return database;
-    }
+        using var runner = this.CreateMongoRunner();
+        var repository = await this.CreateApiRepository(runner, Monster.TableName, allMonsters);
+        var apiService = new ApiService(repository, GetTestMapper());
 
-    private static string GetMongoBinaryDirectory()
-    {
-        var rootPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
-        return new ConfigurationBuilder()
-            .AddJsonFile($"{rootPath}/appsettings.json")
-            .AddEnvironmentVariables()
-            .Build()
-            .GetValue<string>("MongoBinaryDirectory")
-                ?? throw new FileLoadException("Could not find MongoBinaryDirectory in test appsettings");
+        var monsters = await apiService.GetMonsters(1);
+
+        monsters.Count.ShouldBe(1);
+        var monster = monsters.Results.Single();
+        monster.Url.ShouldBe(expectedMonster.Url);
+        monster.Name.ShouldBe(expectedMonster.Name);
+        monster.Index.ShouldBe(expectedMonster.Index);
     }
 }
