@@ -22,14 +22,8 @@ jobs:
       run: echo $MongoBinaryDirectory
     - name: action-mongo-tools
       uses: boly38/action-mongo-tools@v1.0.1
-    - name: Update
-      run: sudo apt update 
-    - name: Install mlocate
-      run: sudo apt install mlocate
-    - name: Update DB
-      run: sudo updatedb
-    - name: Locate Mongo
-      run: locate -b '\mongo'
+    - name: Which Apt
+      run: which apt
     - uses: actions/checkout@v4
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
