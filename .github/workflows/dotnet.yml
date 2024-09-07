@@ -30,6 +30,11 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y mongodb-org
         sudo apt-get update
+    - name: Find Mongo
+      run: |
+        whereis mongo
+        whereis mongod
+        whereis mongodb
     - uses: actions/checkout@v4
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
