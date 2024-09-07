@@ -10,7 +10,7 @@ on:
     branches: [ "main" ]
 
 env:
-  MongoBinaryDirectory: /usr/bin/mongo
+  MongoBinaryDirectory: /usr/bin/mongod
 
 jobs:
   build:
@@ -20,8 +20,6 @@ jobs:
     steps:
     - name: Check Directory
       run: echo $MongoBinaryDirectory
-    - name: action-mongo-tools
-      uses: boly38/action-mongo-tools@v1.0.1
     - name: Install & Update
       run: |
         sudo apt-get install gnupg curl
@@ -32,12 +30,6 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y mongodb-org
         sudo apt-get update
-    - name: Find Mongo
-      run: |
-        whereis mongosh
-        whereis mongo
-        whereis mongod
-        whereis mongodb
     - uses: actions/checkout@v4
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
