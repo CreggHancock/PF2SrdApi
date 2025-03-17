@@ -17,7 +17,6 @@ public class ApiServiceTests : TestBase
         [
             new Monster
             {
-                Index = "mon",
                 Name = "ster",
                 Url = "mon/ster",
                 Id = string.Empty,
@@ -25,7 +24,6 @@ public class ApiServiceTests : TestBase
             },
             new Monster
             {
-                Index = "mini",
                 Name = "mal",
                 Url = "mini/mal",
                 Id = string.Empty,
@@ -42,7 +40,6 @@ public class ApiServiceTests : TestBase
         monsters.Count.ShouldBe(2);
         monsters.Results.ShouldBe(expectedMonsters.Select(m => new MonsterMinimal
             {
-                Index = m.Index,
                 Name = m.Name,
                 Url = m.Url,
                 Id = m.Id,
@@ -54,7 +51,6 @@ public class ApiServiceTests : TestBase
     {
         MonsterMinimal expectedMonster = new ()
         {
-            Index = "mon",
             Name = "ster",
             Url = "mon/ster",
             Id = string.Empty,
@@ -64,7 +60,6 @@ public class ApiServiceTests : TestBase
         [
             new Monster
             {
-                Index = expectedMonster.Index,
                 Name = expectedMonster.Name,
                 Url = expectedMonster.Url,
                 Id = expectedMonster.Id,
@@ -72,7 +67,6 @@ public class ApiServiceTests : TestBase
             },
             new Monster
             {
-                Index = "mini",
                 Name = "mal",
                 Url = "mini/mal",
                 Id = string.Empty,
@@ -90,6 +84,5 @@ public class ApiServiceTests : TestBase
         var monster = monsters.Results.Single();
         monster.Url.ShouldBe(expectedMonster.Url);
         monster.Name.ShouldBe(expectedMonster.Name);
-        monster.Index.ShouldBe(expectedMonster.Index);
     }
 }
