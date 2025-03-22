@@ -7,7 +7,7 @@ namespace PF2SrdApi.Services;
 
 public class ApiRepository(IMongoDatabase database)
 {
-    public virtual IMongoQueryable<T> Get<T>()
+    public virtual IQueryable<T> Get<T>()
         where T : EntityBase, IEntity
     {
         var collection = database.GetCollection<T>(GetCollectionName(typeof(T)));

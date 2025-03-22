@@ -1,7 +1,4 @@
-﻿using AutoMapper;
-using EphemeralMongo;
-using Microsoft.Extensions.Configuration;
-using MongoDB.Driver;
+﻿using MongoDB.Driver;
 using PF2SrdApi.Models;
 using PF2SrdApi.Services;
 using Shouldly;
@@ -19,14 +16,14 @@ public class ApiServiceTests : TestBase
             {
                 Name = "ster",
                 Url = "mon/ster",
-                Id = string.Empty,
+                Id = "mr",
                 Level = 1,
             },
             new Monster
             {
                 Name = "mal",
                 Url = "mini/mal",
-                Id = string.Empty,
+                Id = "ml",
                 Level = 2,
             },
         ];
@@ -53,7 +50,7 @@ public class ApiServiceTests : TestBase
         {
             Name = "ster",
             Url = "mon/ster",
-            Id = string.Empty,
+            Id = "mr",
         };
 
         Monster[] allMonsters =
@@ -69,7 +66,7 @@ public class ApiServiceTests : TestBase
             {
                 Name = "mal",
                 Url = "mini/mal",
-                Id = string.Empty,
+                Id = "ml",
                 Level = 2,
             },
         ];
