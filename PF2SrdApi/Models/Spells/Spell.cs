@@ -2,6 +2,10 @@
 
 namespace PF2SrdApi.Models.Spells;
 
+[Node(
+    IdField = nameof(Id),
+    NodeResolverType = typeof(SpellNodeResolver),
+    NodeResolver = nameof(SpellNodeResolver.ResolveAsync))]
 [BsonIgnoreExtraElements]
 public record Spell : EntityBase, IEntity
 {

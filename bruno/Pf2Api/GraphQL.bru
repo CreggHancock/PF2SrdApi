@@ -1,0 +1,20 @@
+meta {
+  name: GraphQL
+  type: graphql
+  seq: 2
+}
+
+post {
+  url: https://localhost:7249/graphql
+  body: graphql
+  auth: inherit
+}
+
+body:graphql {
+  query query {
+    spells {
+      name
+    }
+  }
+  
+}
