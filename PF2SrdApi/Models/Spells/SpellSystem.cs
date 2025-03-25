@@ -25,31 +25,8 @@ public record SpellSystem
     [BsonElement("defense")]
     public required SpellDefense? Defense { get; init; }
 
-    [BsonIgnore]
-    public GenericValue<string> Description
-        {
-            get
-            {
-                var descriptionNoMarkup = Regex.Replace(this.DescriptionRaw.Value.Replace("\n", string.Empty), "<[^>]+>", string.Empty);
-                var cleanedUpDescription = Regex.Replace(
-                    descriptionNoMarkup,
-                    "@UUID\\[.+]{.+}",
-                    (match) =>
-                    {
-                        return Regex.Replace(match.Value.Replace("}", string.Empty), "@UUID\\[.+]{", string.Empty);
-                    });
-                return new GenericValue<string>
-                {
-                    Value = Regex.Replace(
-                        cleanedUpDescription,
-                        "@UUID\\[.+]",
-                        (match) =>
-                        {
-                            return Regex.Replace(match.Value.Replace("]", string.Empty), "@UUID\\[.+\\.(?=[^.]*$)", string.Empty);
-                        }),
-                };
-            }
-        }
+    [BsonElement("description")]
+    public required GenericValue<string> Description { get; init; }
 
     [BsonElement("duration")]
     public required SpellDuration Duration { get; init; }
@@ -74,7 +51,4 @@ public record SpellSystem
 
     [BsonElement("traits")]
     public required SpellTraits Traits { get; init; }
-
-    [BsonElement("description")]
-    public required GenericValue<string> DescriptionRaw { get; init; }
 }
